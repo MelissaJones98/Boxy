@@ -30,7 +30,8 @@ async function columnsOf(table) {
   return rows.map((r) => r.column_name).sort();
 }
 
-beforeAll(() => migrate('up'));
+// No beforeAll(migrate('up')) needed: tests/setup/globalSetup.js has already
+// migrated boxy_test before any test file runs.
 afterAll(() => db.pool.end());
 
 describe('initial schema migration', () => {
@@ -69,8 +70,12 @@ describe('initial schema migration', () => {
     );
     const defs = rows.map((r) => r.indexdef);
 
-    expect(defs).toEqual(expect.arrayContaining([expect.stringMatching(/ON public\.boxes .*\(user_id\)/)]));
-    expect(defs).toEqual(expect.arrayContaining([expect.stringMatching(/ON public\.items .*\(box_id\)/)]));
+    expect(defs).toEqual(
+      expect.arrayContaining([expect.stringMatching(/ON public\.boxes .*\(user_id\)/)]),
+    );
+    expect(defs).toEqual(
+      expect.arrayContaining([expect.stringMatching(/ON public\.items .*\(box_id\)/)]),
+    );
   });
 
   it('can be rolled back completely, then re-applied', async () => {
