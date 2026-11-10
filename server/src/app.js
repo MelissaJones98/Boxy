@@ -25,7 +25,7 @@ app.get('/api/health', (req, res) => {
 // ---------------------------------------------------------------------------
 
 // Catch-all for requests that matched no route above.
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
 
