@@ -1,0 +1,19 @@
+{
+  "name": "boxy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Mobile-first PERN app for cataloguing what's inside physical boxes",
+  "workspaces": [
+    "server"
+  ],
+  "scripts": {
+    "test": "npm test --workspaces --if-present",
+    "test:server": "npm test -w server",
+    "dev:server": "npm run dev -w server",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.9.10"
+  }
+}
