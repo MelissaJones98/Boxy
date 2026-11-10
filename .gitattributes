@@ -1,0 +1,12 @@
+# Store and check out every text file with LF line endings, on every OS.
+# This matches Prettier's "endOfLine": "lf" and the Linux machines that
+# GitHub Actions and Render run on. Without it, Git on Windows converts files
+# to CRLF on checkout and `npm run format:check` would flag every file.
+* text=auto eol=lf
+
+# Binary files: never touch their line endings.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.heic binary

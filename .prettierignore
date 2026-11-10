@@ -1,0 +1,10 @@
+# Files Prettier should never reformat
+node_modules/
+package-lock.json
+coverage/
+dist/
+build/
+
+# Plan documents: the wireframes HTML is a generated bundle, and the plan
+# Markdown is kept exactly as written.
+plans/
