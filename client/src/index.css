@@ -1,15 +1,7 @@
 /*
-  src/index.css — global styles.
-  Intentionally almost empty for now: the Inter font, colour tokens and the
-  mobile-first layout arrive in ticket 1.10.
+  src/index.css — the one global stylesheet, imported by src/main.jsx.
+  It just pulls in the others, in order: the tokens first, so base.css can use them.
 */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
+@import './styles/tokens.css';
+@import './styles/base.css';

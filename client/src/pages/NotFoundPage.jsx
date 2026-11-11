@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 // used <link> instead of <a> because <a href="/"> reloads the whole app which will empty the Redux store meaning everything in memory will be lost
 function NotFoundPage() {
   return (
-    <main>
+    <main className="page">
       <h1>Page not found</h1>
       <Link to="/">Back to home</Link>
     </main>

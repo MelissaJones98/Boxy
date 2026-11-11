@@ -3,7 +3,9 @@
 
 function Placeholder({ title }) {
   return (
-    <main>
+    // "page" = the shared layout in src/styles/base.css (gutters, max width).
+    // JSX uses className, not class, because `class` is a reserved word in JavaScript.
+    <main className="page">
       <h1>{title}</h1>
     </main>
   );

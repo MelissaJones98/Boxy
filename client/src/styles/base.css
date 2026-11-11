@@ -1,0 +1,121 @@
+/*
+  src/styles/base.css — global element styles and the page layout.
+
+  MOBILE-FIRST: every rule outside a media query is written for a phone
+  (designed at 375–390px). Wider screens then ADD to it with
+  @media (min-width: 768px), so a phone never downloads rules it then has
+  to undo.
+*/
+
+/* ---- Reset ------------------------------------------------------------ */
+
+/* Width and height include padding and border, so a 100%-wide input with
+   padding doesn't overflow its container. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh; /* dvh = the visible height on phones, excluding browser toolbars */
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.2;
+  font-weight: var(--font-weight-bold);
+}
+
+h1 {
+  font-size: var(--font-size-xl);
+}
+
+img {
+  display: block;
+  max-width: 100%; /* photos never overflow a narrow screen */
+}
+
+/* ---- Tappable things -------------------------------------------------- */
+
+/* Form controls don't inherit the page font by default. */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* 44 x 44px minimum tap target (CLAUDE.md UI conventions). */
+button,
+[role='button'] {
+  min-height: var(--tap-target);
+  min-width: var(--tap-target);
+  cursor: pointer;
+}
+
+a {
+  color: var(--color-primary);
+}
+
+/* Show a clear focus ring for keyboard users only. :focus-visible doesn't
+   appear after a mouse click or a tap, so it never gets in a touch user's way. */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ---- Page layout ------------------------------------------------------ */
+
+/* Every screen's <main className="page">. On a phone: full width with a
+   16px gutter on each side. */
+.page {
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+/* From 768px wide, give .page more breathing room. */
+@media (min-width: 768px) {
+  .page {
+    padding: var(--space-6);
+    max-width: var(--content-max-width);
+  }
+}
+
+/* ---- Helpers ---------------------------------------------------------- */
+
+/* Hide something visually but keep it for screen readers, e.g. a label
+   for an icon-only button. (display: none would hide it from both.) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Respect the OS "reduce motion" setting: sheets and toasts will animate in
+   later steps, and this switches those animations off for people who need it. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

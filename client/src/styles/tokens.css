@@ -1,0 +1,82 @@
+/*
+  src/styles/tokens.css — Boxy's design tokens: the named values every other
+  stylesheet uses, instead of repeating raw colours and sizes.
+
+  They're CSS custom properties ("variables") on :root, so any rule can use
+  one with var(--name), e.g.  color: var(--color-primary);
+  Change a value here and it changes everywhere.
+
+  Source: CLAUDE.md "UI conventions" and the wireframes in plans/wireframes/.
+  Greyscale, plus ONE blue accent for primary actions and ONE red for
+  destructive ones.
+*/
+
+:root {
+  /* ---- Colour ---------------------------------------------------------- */
+
+  /* Surfaces */
+  --color-bg: #f5f6f8; /* page background (light grey behind cards) */
+  --color-surface: #ffffff; /* cards, sheets, dialogs, top bar */
+  --color-surface-muted: #eef0f3; /* icon tiles, photo placeholders, disabled rows */
+  --color-border: #e1e4e8; /* card outlines and dividers */
+
+  /* Text */
+  --color-text: #1d1f23; /* headings and body text */
+  --color-text-muted: #6b6f76; /* secondary text: "14 items · Garage shelf 2" */
+  --color-text-on-dark: #ffffff; /* text on primary, danger or dark backgrounds */
+
+  /* Actions */
+  --color-primary: #2f5bea; /* primary buttons, FAB, selected radio, links */
+  --color-primary-hover: #2449c4;
+  --color-primary-subtle: #edf1fd; /* selected row background in the Move sheet */
+  --color-danger: #b42318; /* Delete buttons and destructive outlines */
+  --color-danger-hover: #912018;
+
+  /* The near-black "Locked" pill, the locked banner and the toast */
+  --color-dark: #1f2328;
+
+  /* Keyboard focus ring: must stay visible on white and grey */
+  --color-focus: #2f5bea;
+
+  /* ---- Typography ------------------------------------------------------ */
+
+  /* "Inter Variable" is the self-hosted font from @fontsource-variable/inter
+     (imported in src/main.jsx). The rest are fallbacks while it loads. */
+  --font-sans:
+    'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --font-size-sm: 0.875rem; /* 14px: meta text, hints, pills */
+  --font-size-md: 1rem; /* 16px: body. Keep inputs at least 16px, or iOS zooms in on focus */
+  --font-size-lg: 1.25rem; /* 20px: card titles */
+  --font-size-xl: 1.75rem; /* 28px: page titles ("My Boxes", "Winter clothes") */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* ---- Spacing (a 4px scale) ------------------------------------------- */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px: the standard page gutter on phones */
+  --space-5: 1.5rem; /* 24px */
+  --space-6: 2rem; /* 32px */
+
+  /* ---- Shape ----------------------------------------------------------- */
+  --radius-sm: 0.5rem; /* inputs, icon tiles */
+  --radius-md: 0.75rem; /* cards, buttons */
+  --radius-lg: 1.25rem; /* bottom sheets */
+  --radius-pill: 999px; /* the Locked pill, the FAB */
+
+  --shadow-raised: 0 4px 12px rgb(0 0 0 / 0.15); /* floating action button, toast */
+
+  /* ---- Layout ---------------------------------------------------------- */
+  --tap-target: 44px; /* minimum width/height of anything tappable (CLAUDE.md) */
+  --topbar-height: 56px; /* the AppShell top bar */
+  --content-max-width: 960px; /* stops lines getting too long on wide screens */
+
+  /*
+    The 768px breakpoint can't be a variable: custom properties don't work
+    inside @media conditions. It's written as a number in base.css instead.
+  */
+}

@@ -5,6 +5,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
+// The Inter font, bundled with the app by Vite (no request to Google Fonts).
+// Imported before index.css so the font exists before styles reference it.
+import '@fontsource-variable/inter';
 import './index.css';
 import App from './App.jsx';
 import { setupStore } from './store';
