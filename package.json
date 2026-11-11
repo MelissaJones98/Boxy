@@ -4,11 +4,14 @@
   "private": true,
   "description": "Mobile-first PERN app for cataloguing what's inside physical boxes",
   "workspaces": [
+    "client",
     "server"
   ],
   "scripts": {
     "test": "npm test --workspaces --if-present",
+    "test:client": "npm test -w client",
     "test:server": "npm test -w server",
+    "dev:client": "npm run dev -w client",
     "dev:server": "npm run dev -w server",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

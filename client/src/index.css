@@ -1,0 +1,15 @@
+/*
+  src/index.css — global styles.
+  Intentionally almost empty for now: the Inter font, colour tokens and the
+  mobile-first layout arrive in ticket 1.10.
+*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
