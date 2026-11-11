@@ -1,0 +1,110 @@
+# .github/workflows/ci.yml — Continuous Integration for Boxy.
+#
+# GitHub reads every .yml file in .github/workflows/ and runs it on its own
+# Linux machines ("runners"). This one checks every push and pull request:
+# formatting, lint, the client build, and both test suites. A red cross on a
+# commit in GitHub means one of these jobs failed; click it to see which step.
+#
+# The three jobs below run IN PARALLEL on separate fresh machines, so a slow
+# job doesn't hold up the others, and each one starts from a clean slate.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request: # every PR, whatever branch it targets
+
+# If you push again while a run for the same branch is still going, cancel the
+# old run. Its result would be out of date anyway.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------------------
+  quality:
+    name: Format, lint and build
+    runs-on: ubuntu-latest
+    steps:
+      # Download the repo's code onto the runner.
+      - uses: actions/checkout@v7
+
+      # Install Node 24 (the version used locally) and cache npm's download
+      # folder between runs, keyed on package-lock.json, so installs are fast.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      # `npm ci` (not `npm install`) installs EXACTLY what package-lock.json
+      # says and fails if package.json and the lock file disagree, so CI tests
+      # the same dependency versions you have locally.
+      - run: npm ci
+
+      - run: npm run format:check
+      - run: npm run lint -w client
+      # Catches anything that works in dev but breaks the production bundle.
+      - run: npm run build -w client
+
+  # ---------------------------------------------------------------------------
+  server-tests:
+    name: Server tests (Jest + Postgres)
+    runs-on: ubuntu-latest
+
+    # A "service container" is a Docker container that runs alongside the job
+    # and is thrown away afterwards. Here it's a brand-new, empty Postgres 18
+    # each run: the same version as local, with nothing left over from last time.
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          # The official image creates this user, password and database on
+          # startup. They're throwaway values for a container that only exists
+          # for the length of this job and is never reachable from the
+          # internet, so they don't need to be GitHub secrets.
+          POSTGRES_USER: boxy
+          POSTGRES_PASSWORD: boxy_ci_password
+          POSTGRES_DB: boxy_test
+        # Map the container's port 5432 to the runner's port 5432, so the tests
+        # can connect to localhost:5432, just as they do on your machine.
+        ports:
+          - 5432:5432
+        # Don't start the job's steps until Postgres actually accepts
+        # connections. Without this, the first test can run before the
+        # database is ready and fail with "connection refused".
+        options: >-
+          --health-cmd "pg_isready -U boxy -d boxy_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    # There's no server/.env in CI (it's git-ignored), so the variables the
+    # tests read from it are set here instead. tests/setup/loadEnv.js finds no
+    # file and quietly does nothing, and dotenv never overwrites real env vars.
+    env:
+      TEST_DATABASE_URL: postgres://boxy:boxy_ci_password@localhost:5432/boxy_test
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # Jest's globalSetup runs the migrations on the empty database first.
+      - run: npm run test:server
+
+  # ---------------------------------------------------------------------------
+  client-tests:
+    name: Client tests (Jest + RTL + MSW)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # No database or server needed: MSW answers every /api request.
+      - run: npm run test:client
