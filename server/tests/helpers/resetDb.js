@@ -17,7 +17,8 @@ const db = require('../../src/db');
 async function resetDb() {
   // RESTART IDENTITY resets each table's SERIAL counter
   // CASCADE empties any table whose foreign keys point at the ones you list
-  await db.query('TRUNCATE users, boxes, items, item_photos RESTART IDENTITY CASCADE');
+  // session has no foreign keys, so CASCADE wouldn't reach it: it must be listed.
+  await db.query('TRUNCATE users, boxes, items, item_photos, session RESTART IDENTITY CASCADE');
 }
 
 module.exports = { resetDb };

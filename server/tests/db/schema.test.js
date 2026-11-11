@@ -8,7 +8,9 @@
 const db = require('../../src/db');
 const { migrate } = require('../helpers/migrate');
 
-const TABLES = ['users', 'boxes', 'items', 'item_photos'];
+// Every table our migrations create. `session` (Step 2) holds login sessions
+// for express-session, via connect-pg-simple.
+const TABLES = ['users', 'boxes', 'items', 'item_photos', 'session'];
 
 /** Names of our tables that currently exist in the public schema. */
 async function existingTables() {
@@ -34,8 +36,8 @@ async function columnsOf(table) {
 // migrated boxy_test before any test file runs.
 afterAll(() => db.pool.end());
 
-describe('initial schema migration', () => {
-  it('creates the users, boxes, items and item_photos tables', async () => {
+describe('schema migrations', () => {
+  it('create the users, boxes, items, item_photos and session tables', async () => {
     expect(await existingTables()).toEqual([...TABLES].sort());
   });
 
@@ -57,6 +59,8 @@ describe('initial schema migration', () => {
     ],
     ['items', ['id', 'box_id', 'name', 'quantity', 'notes', 'created_at', 'updated_at']],
     ['item_photos', ['id', 'item_id', 'url', 'storage_key', 'created_at']],
+    // The exact columns connect-pg-simple reads and writes (see its table.sql).
+    ['session', ['sid', 'sess', 'expire']],
   ])('gives %s exactly the planned columns', async (table, expected) => {
     expect(await columnsOf(table)).toEqual([...expected].sort());
   });

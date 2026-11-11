@@ -8,6 +8,10 @@
 const db = require('../../src/db');
 const { resetDb } = require('../helpers/resetDb');
 
+// Start each test clean, like every other database test file. Without this, a
+// crashed earlier run can leave rows behind that make seedOneOfEverything()
+// collide (duplicate email or session id) before resetDb() is even called.
+beforeEach(resetDb);
 afterAll(() => db.pool.end());
 
 /** Insert one row into every table, following the foreign-key chain. */
@@ -26,6 +30,11 @@ async function seedOneOfEverything() {
   await db.query(`INSERT INTO item_photos (item_id, url, storage_key) VALUES ($1, 'u', 'k')`, [
     item.rows[0].id,
   ]);
+  // A leftover login session. If tests didn't clear these, a "logged out
+  // users get 401" test could pass or fail depending on which test ran before it.
+  await db.query(
+    `INSERT INTO session (sid, sess, expire) VALUES ('abc', '{}', now() + interval '1 day')`,
+  );
 }
 
 async function rowCount(table) {
@@ -42,7 +51,7 @@ describe('resetDb', () => {
 
     await resetDb();
 
-    for (const table of ['users', 'boxes', 'items', 'item_photos']) {
+    for (const table of ['users', 'boxes', 'items', 'item_photos', 'session']) {
       expect({ table, rows: await rowCount(table) }).toEqual({ table, rows: 0 });
     }
   });

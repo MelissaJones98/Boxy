@@ -84,6 +84,9 @@ jobs:
     # file and quietly does nothing, and dotenv never overwrites real env vars.
     env:
       TEST_DATABASE_URL: postgres://boxy:boxy_ci_password@localhost:5432/boxy_test
+      # Only signs cookies for test requests inside this job, so a fixed,
+      # public value is fine here. Production gets its own secret on Render.
+      SESSION_SECRET: ci-only-session-secret-not-used-anywhere-real
 
     steps:
       - uses: actions/checkout@v7
